@@ -7,13 +7,12 @@ call vundle#begin()
 
 set backspace=2
 
-
-
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
 
 call vundle#begin()
 
+Plugin 'nanotech/jellybeans.vim'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 Plugin 'scrooloose/nerdtree'
@@ -38,10 +37,17 @@ Plugin 'kana/vim-arpeggio'
 Plugin 'jlanzarotta/bufexplorer'
 Plugin 'tpope/vim-commentary.git'
 Plugin 'ervandew/supertab'
+Plugin 'jreybert/vimagit'
 
 
 call vundle#end()
 
+let g:airline_theme='jellybeans'
+
+let g:airline#extensions#tabline#enabled=1
+let g:airline#extensions#tabline#left_sep=' '
+let g:airline#extensions#tabline#left_alt_sep ='|'
+let g:airline#extensions#tabline#formatter ='default'
 
 " configs
 syntax on
@@ -50,12 +56,26 @@ set number
 set hidden
 set tags=tags
 
-set showmode
+set background=dark
+colorscheme jellybeans
 
-" syntastic config
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
+" set showmode
+
+" " syntastic config
+" set statusline+=%#warningmsg#
+" set statusline+=%{SyntasticStatuslineFlag()}
+" set statusline+=%*
+
+
+" vim-multiple-cursors
+" Default mapping
+let g:multi_cursor_next_key='<C-n>'
+let g:multi_cursor_prev_key='<C-p>'
+let g:multi_cursor_skip_key='<C-x>'
+let g:multi_cursor_quit_key='<Esc>'
+
+
+
 
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
