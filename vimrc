@@ -32,22 +32,48 @@ Plugin 'tpope/vim-unimpaired'
 Plugin 'tpope/vim-repeat'
 Plugin 'jiangmiao/auto-pairs'
 Plugin 'SirVer/ultisnips'
-Plugin 'honza/vim-snippets'
+Plugin 'https://github.com/honza/vim-snippets'
 Plugin 'kana/vim-arpeggio'
 Plugin 'jlanzarotta/bufexplorer'
 Plugin 'tpope/vim-commentary.git'
 Plugin 'ervandew/supertab'
 Plugin 'jreybert/vimagit'
+Plugin 'https://github.com/AndrewRadev/splitjoin.vim'
+Plugin 'gregsexton/gitv'
+Plugin 'thoughtbot/vim-rspec'
+Plugin 'jgdavey/tslime.vim'
+Plugin 'mattn/emmet-vim'
+Plugin 'https://github.com/adelarsq/vim-matchit'
+Plugin 'https://github.com/majutsushi/tagbar'
+Plugin 'https://github.com/godlygeek/tabular'
+Plugin 'brooth/far.vim'
+Plugin 'ngmy/vim-rubocop'
+
+
+" inline search highlight / working with easy motion
+Plugin 'haya14busa/incsearch.vim'
+Plugin 'haya14busa/incsearch-easymotion.vim'
+
+" typescript
+Plugin 'https://github.com/Quramy/tsuquyomi'
+Plugin 'https://github.com/jason0x43/vim-js-indent'
+Plugin 'https://github.com/leafgarland/typescript-vim'
+Plugin 'Quramy/vim-js-pretty-template'
+
+
 
 
 call vundle#end()
 
-let g:airline_theme='jellybeans'
 
-let g:airline#extensions#tabline#enabled=1
+let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#left_sep=' '
 let g:airline#extensions#tabline#left_alt_sep ='|'
 let g:airline#extensions#tabline#formatter ='default'
+
+" enable indent guide
+" https://github.com/nathanaelkane/vim-indent-guides
+let g:indent_guides_enable_on_vim_startup = 1
 
 " configs
 syntax on
@@ -55,16 +81,24 @@ filetype plugin indent on
 set number
 set hidden
 set tags=tags
+set relativenumber!
+set t_Co=256
 
 set background=dark
 colorscheme jellybeans
 
+" let g:airline_theme='base16'
+
+
 " set showmode
 
-" " syntastic config
-" set statusline+=%#warningmsg#
-" set statusline+=%{SyntasticStatuslineFlag()}
-" set statusline+=%*
+" syntastic config
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+" key mappings
+let mapleader = ","
 
 
 " vim-multiple-cursors
@@ -81,7 +115,9 @@ let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
+
 let g:ctrlp_map = '<leader>f'
+nnoremap <leader>. :CtrlPTag<cr>
 
 
 " Indent settings
@@ -92,8 +128,6 @@ set autoindent
 set showtabline=2
 
 
-" key mappings
-let mapleader = ","
 
 " ag/silver searcher
 " search for the word under the cursor
@@ -109,6 +143,8 @@ map <leader>t :NERDTreeToggle<cr>
 nmap <Leader>k :Dash<cr>
 nnoremap <leader>b :BufExplorer<cr>
 nnoremap <leader>m <c-^>
+nnoremap <leader>. :CtrlPTag<cr>
+nnoremap <silent> <Leader>b :TagbarToggle<CR>
 
 silent! call repeat#set("\<Plug>MyWonderfulMap", v:count)
 
@@ -123,7 +159,27 @@ function! RenameFile()
   endif
 endfunction
 
-map <leader>n :call RenameFile()<cr>
+map <leader>r :call RenameFile()<cr>
+
+" incsearch-easymotion
+" You can use other keymappings like <C-l> instead of <CR> if you want to
+" use these mappings as default search and somtimes want to move cursor with
+" EasyMotion.
+function! s:incsearch_config(...) abort
+  return incsearch#util#deepextend(deepcopy({
+  \   'modules': [incsearch#config#easymotion#module({'overwin': 1})],
+  \   'keymap': {
+  \     "\<CR>": '<Over>(easymotion)'
+  \   },
+  \   'is_expr': 0
+  \ }), get(a:, 1, {}))
+endfunction
+
+noremap <silent><expr> /  incsearch#go(<SID>incsearch_config())
+noremap <silent><expr> ?  incsearch#go(<SID>incsearch_config({'command': '?'}))
+noremap <silent><expr> g/ incsearch#go(<SID>incsearch_config({'is_stay': 1}))
+
+" end of incsearch-easymotion
 
 " Go to spec (rails)
 map <leader>l :A<cr>
@@ -150,8 +206,7 @@ autocmd BufWritePre *.sass :call <SID>StripTrailingWhitespaces()
 autocmd BufWritePre *.textile :call <SID>StripTrailingWhitespaces()
 autocmd BufWritePre *.js :call <SID>StripTrailingWhitespaces()
 autocmd BufWritePre *.html :call <SID>StripTrailingWhitespaces()
-
-nnoremap <leader>b :BufExplorer<cr>
+autocmd BufNewFile,BufRead *.ts setlocal filetype=typescript
 
 " use system clipboard as the default
 " https://github.com/tmux/tmux/issues/543#issuecomment-248980734
@@ -162,7 +217,63 @@ endif
 
 " copy and paste
 vmap <C-c> "+yi
-vmap <C-x> "+c
 vmap <C-v> c<ESC>"+p
 imap <C-v> <ESC>"+pa
+
+let g:rspec_command = 'call Send_to_Tmux("rspec {spec}\n")'
+" vim-rspec mappings
+map <Leader>p :call RunCurrentSpecFile()<CR>
+map <Leader>a :call RunAllSpecs()<CR>
+
+" ===== Seeing Is Believing =====
+" Assumes you have a Ruby with SiB available in the PATH
+" If it doesn't work, you may need to `gem install seeing_is_believing`
+
+function! WithoutChangingCursor(fn)
+  let cursor_pos     = getpos('.')
+  let wintop_pos     = getpos('w0')
+  let old_lazyredraw = &lazyredraw
+  let old_scrolloff  = &scrolloff
+  set lazyredraw
+
+  call a:fn()
+
+  call setpos('.', wintop_pos)
+  call setpos('.', cursor_pos)
+  redraw
+  let &lazyredraw = old_lazyredraw
+  let scrolloff   = old_scrolloff
+endfun
+
+function! SibAnnotateAll(scope)
+  call WithoutChangingCursor(function('execute', [a:scope . "!seeing_is_believing --timeout 12 --line-length 500 --number-of-captures 300 --alignment-strategy chunk"]))
+endfun
+
+function! SibAnnotateMarked(scope)
+  call WithoutChangingCursor(function('execute', [a:scope . "!seeing_is_believing --xmpfilter-style --timeout 12 --line-length 500 --number-of-captures 300 --alignment-strategy chunk"]))
+endfun
+
+function! SibCleanAnnotations(scope)
+  call WithoutChangingCursor(function('execute', [a:scope . "!seeing_is_believing --clean"]))
+endfun
+
+function! SibToggleMark()
+  let pos  = getpos('.')
+  let line = getline(".")
+  if line =~ '^\s*$'
+    let line = '# => '
+  elseif line =~ '# =>'
+    let line = substitute(line, ' *# =>.*', '', '')
+  else
+    let line .= '  # => '
+  end
+  call setline('.', line)
+  call setpos('.', pos)
+endfun
+
+
+" Move VISUAL LINE selection within buffer.
+xnoremap <silent> K :move  '<-2<CR>gv=gv
+xnoremap <silent> J :move  '>+1<CR>gv=gv
+
 

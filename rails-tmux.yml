@@ -1,0 +1,10 @@
+name: rails-tmux
+project_root: .
+windows:
+  - editor:
+      layout: main-vertical
+      panes:
+        - nv
+        - bundle exec rails s
+        - bundle exec rails c
+  - logs: tail -f log/development.log

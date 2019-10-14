@@ -1,0 +1,8 @@
+name: ionic-tmux
+project_root: .
+windows:
+  - editor:
+      layout: main-vertical
+      panes:
+        - nv
+        - ionic serve

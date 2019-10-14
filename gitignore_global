@@ -1,0 +1,36 @@
+# git
+.ruby-gemset
+
+# Operating System
+*~
+.DS_Store
+
+# Text editor and IDEs
+Session.vim
+*.sw?
+
+# Ctags
+tags
+
+# Simplecov
+coverage/
+
+# SASS
+/.sass-cache/
+
+# RVM
+/.rvmrc
+
+# Ruby gems
+rails_best_practices_output.html
+.routes
+
+# NPM logs
+npm-debug.log
+
+# Byebug command history file
+.byebug_history
+
+# Project specific Vim configurations
+/.vimrc
+rails.rb
