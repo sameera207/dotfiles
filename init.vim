@@ -5,13 +5,6 @@ Plug 'mhartington/oceanic-next'
 " Plug 'morhetz/gruvbox'
 Plug 'vim-airline/vim-airline-themes'
 
-" icons
-Plug 'ryanoasis/vim-devicons'
-Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
-
-
-
-
 Plug 'vim-ruby/vim-ruby'
 Plug 'tpope/vim-rails'
 Plug 'godlygeek/tabular'
@@ -59,9 +52,12 @@ Plug 'sameera207/vim-react-snippets'
 Plug 'honza/vim-snippets' " Ultisnips
 Plug 'SirVer/ultisnips'
 
-Plugin 'pangloss/vim-javascript'
+Plug 'pangloss/vim-javascript'
 Plug 'maxmellon/vim-jsx-pretty'
 
+" icons
+Plug 'ryanoasis/vim-devicons'
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 
 call plug#end()
 
@@ -71,6 +67,7 @@ set number
 set hidden
 set tags=tags
 set relativenumber!
+set encoding=utf8
 
 " Improving scrolling performance for far
 set lazyredraw
@@ -86,6 +83,7 @@ endif
 syntax enable
 colorscheme OceanicNext
 let g:airline_theme='oceanicnext'
+let g:airline_powerline_fonts = 1
 
 "colorscheme gruvbox
 "set background=light
@@ -135,7 +133,7 @@ let g:ags_agargs = {
   \ '--colors'         : [['match:fg:green', 'match:bg:black', 'match:style:nobold', 'path:fg:red', 'path:style:bold', 'line:fg:black', 'line:style:bold'] ,''],
   \ }
 " Search for the word under cursor
-nnoremap <Leader>d :Ags<cword><CR>
+nnoremap <Leader>d :Ags<Space><C-R>=expand('<cword>')<CR><CR>
 " Search for the visually selected text
 vnoremap <Leader>a y:Ags<Space><C-R>='"' . escape(@", '"*?()[]{}.') . '"'<CR><CR>
 " Run Ags
@@ -241,3 +239,5 @@ autocmd BufWritePre *.sass :call <SID>StripTrailingWhitespaces()
 autocmd BufWritePre *.textile :call <SID>StripTrailingWhitespaces()
 autocmd BufWritePre *.js :call <SID>StripTrailingWhitespaces()
 autocmd BufWritePre *.html :call <SID>StripTrailingWhitespaces()
+
+autocmd FileType json syntax match Comment +\/\/.\+$+

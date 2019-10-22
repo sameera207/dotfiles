@@ -5,7 +5,7 @@ export PATH="$PATH:$HOME/.rvm/bin"
 
 export PATH="~/bin:$PATH"
 
-export EDITOR='vim'
+export EDITOR='nvim'
 
 
 export NVM_DIR="$HOME/.nvm"
