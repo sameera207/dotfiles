@@ -1,3 +1,23 @@
 {
-
+  "suggest.echodocSupport": true,
+  "suggest.maxCompleteItemCount": 20,
+  "coc.preferences.formatOnSaveFiletypes": [
+    "javascript",
+    "typescript",
+    "typescriptreact",
+    "json",
+    "javascriptreact"
+  ],
+  "tsserver.log": "verbose",
+  "tsserver.trace.server": "verbose",
+  "eslint.filetypes": [
+    "javascript",
+    "typescript",
+    "typescriptreact",
+    "javascriptreact"
+  ],
+  "diagnostic.errorSign": "•",
+  "diagnostic.warningSign": "•",
+  "diagnostic.infoSign": "•",
+  "solargraph.commandPath": "/Users/sameeragayan/.rvm/gems/ruby-2.4.3/bin/solargraph"
 }

@@ -59,6 +59,10 @@ Plug 'maxmellon/vim-jsx-pretty'
 Plug 'ryanoasis/vim-devicons'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 
+" rspec runner
+Plug 'janko/vim-test'
+Plug 'tpope/vim-dispatch'
+
 call plug#end()
 
 syntax on
@@ -142,7 +146,6 @@ nnoremap <Leader>s :Ags<Space>
 nnoremap <Leader><Leader>s :AgsQuit<CR>
 
 map <leader>t :NERDTreeToggle<cr>
-nmap <Leader>k :Dash<cr>
 nnoremap <leader>b :BufExplorer<cr>
 nnoremap <leader>m <c-^>
 
@@ -241,3 +244,44 @@ autocmd BufWritePre *.js :call <SID>StripTrailingWhitespaces()
 autocmd BufWritePre *.html :call <SID>StripTrailingWhitespaces()
 
 autocmd FileType json syntax match Comment +\/\/.\+$+
+
+" Move VISUAL LINE selection within buffer.
+xnoremap <silent> K :move  '<-2<CR>gv=gv
+xnoremap <silent> J :move  '>+1<CR>gv=gv
+
+" RENAME CURRENT FILE
+function! RenameFile()
+  let old_name = expand('%')
+  let new_name = input('New file name: ', expand('%'), 'file')
+  if new_name != '' && new_name != old_name
+    exec ':saveas ' . new_name
+    exec ':silent !rm ' . old_name
+    redraw!
+  endif
+endfunction
+
+map <leader>r :call RenameFile()<cr>
+
+
+" ====================================
+" RSpec
+" Go to spec (rails)
+map <leader>l :A<cr>
+
+" janko/vim-test
+let test#ruby#rspec#options = {
+  \ 'nearest': '--backtrace',
+  \ 'file':    '--format documentation',
+  \ 'suite':   '--tag ~slow',
+  \}
+let test#neovim#term_position = "topleft"
+let test#strategy = {
+  \ 'nearest': 'neovim',
+  \ 'file':    'dispatch',
+  \ 'suite':   'basic',
+  \}
+let g:test#preserve_screen = 0
+" end of RSpec config
+" ====================================
+
+
