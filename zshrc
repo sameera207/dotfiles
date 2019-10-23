@@ -96,7 +96,7 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-alias nv="~/nvim-osx64/bin/nvim"
+alias nv="nvim"
 alias tx=tmuxinator
 
 EDITOR="nv"
