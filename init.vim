@@ -36,6 +36,8 @@ Plug 'kana/vim-textobj-user'
 Plug 'rhysd/vim-textobj-ruby'
 Plug 'sbdchd/neoformat'
 
+Plug 'tpope/vim-eunuch'
+
 
 " Use release branch
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -62,6 +64,12 @@ Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 " rspec runner
 Plug 'janko/vim-test'
 Plug 'tpope/vim-dispatch'
+
+" Docker
+Plug 'skanehira/docker-compose.vim'
+
+" linting
+Plug 'dense-analysis/ale'
 
 call plug#end()
 
@@ -102,6 +110,8 @@ map zg/ <Plug>(incsearch-stay)
 map / <Plug>(incsearch-easymotion-/)
 map ? <Plug>(incsearch-easymotion-?)
 map g/ <Plug>(incsearch-easymotion-stay)
+
+nmap <silent> ./ :nohlsearch<CR>
 
 let g:ctrlp_map = '<leader>f'
 let g:ctrlp_cmd = 'CtrlP'
@@ -197,6 +207,11 @@ set shortmess+=c
 " always show signcolumns
 set signcolumn=yes
 
+" ======= docker config
+" open terminal way
+let g:docker_compose_open_terminal_way = 'top'
+" === end of docker config
+
 " Use tab for trigger completion with characters ahead and navigate.
 " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
 inoremap <silent><expr> <TAB>
@@ -284,4 +299,68 @@ let g:test#preserve_screen = 0
 " end of RSpec config
 " ====================================
 
+" ===== Seeing Is Believing =====
+" Assumes you have a Ruby with SiB available in the PATH
+" If it doesn't work, you may need to `gem install seeing_is_believing`
 
+function! WithoutChangingCursor(fn)
+  let cursor_pos     = getpos('.')
+  let wintop_pos     = getpos('w0')
+  let old_lazyredraw = &lazyredraw
+  let old_scrolloff  = &scrolloff
+  set lazyredraw
+
+  call a:fn()
+
+  call setpos('.', wintop_pos)
+  call setpos('.', cursor_pos)
+  redraw
+  let &lazyredraw = old_lazyredraw
+  let scrolloff   = old_scrolloff
+endfun
+
+function! SibAnnotateAll(scope)
+  call WithoutChangingCursor(function('execute', [a:scope . "!seeing_is_believing --timeout 12 --line-length 500 --number-of-captures 300 --alignment-strategy chunk"]))
+endfun
+
+function! SibAnnotateMarked(scope)
+  call WithoutChangingCursor(function('execute', [a:scope . "!seeing_is_believing --xmpfilter-style --timeout 12 --line-length 500 --number-of-captures 300 --alignment-strategy chunk"]))
+endfun
+
+function! SibCleanAnnotations(scope)
+  call WithoutChangingCursor(function('execute', [a:scope . "!seeing_is_believing --clean"]))
+endfun
+
+function! SibToggleMark()
+  let pos  = getpos('.')
+  let line = getline(".")
+  if line =~ '^\s*$'
+    let line = '# => '
+  elseif line =~ '# =>'
+    let line = substitute(line, ' *# =>.*', '', '')
+  else
+    let line .= '  # => '
+  end
+  call setline('.', line)
+  call setpos('.', pos)
+endfun
+
+" Enable seeing-is-believing mappings only for Ruby
+augroup seeingIsBelievingSettings
+  " clear the settings if they already exist (so we don't run them twice)
+  autocmd!
+  autocmd FileType ruby nmap <buffer> <Leader>b :call SibAnnotateAll("%")<CR>;
+  autocmd FileType ruby nmap <buffer> <Leader>n :call SibAnnotateMarked("%")<CR>;
+  autocmd FileType ruby nmap <buffer> <Leader>v :call SibCleanAnnotations("%")<CR>;
+  autocmd FileType ruby nmap <buffer> <Enter>   :call SibToggleMark()<CR>;
+  autocmd FileType ruby vmap <buffer> <Enter>   :call SibToggleMark()<CR>;
+
+  autocmd FileType ruby vmap <buffer> <Leader>b :call SibAnnotateAll("'<,'>")<CR>;
+  autocmd FileType ruby vmap <buffer> <Leader>n :call SibAnnotateMarked("'<,'>")<CR>;
+  autocmd FileType ruby vmap <buffer> <Leader>v :call SibCleanAnnotations("'<,'>")<CR>;
+augroup END
+
+
+" Move VISUAL LINE selection within buffer.
+xnoremap <silent> K :move  '<-2<CR>gv=gv
+xnoremap <silent> J :move  '>+1<CR>gv=gv
