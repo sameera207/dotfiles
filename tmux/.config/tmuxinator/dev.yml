@@ -1,0 +1,13 @@
+# /Users/sameera.gayan/.config/tmuxinator/dev.yml
+name: dev
+root: ~/workspace/personal
+
+windows:
+  - main:
+      layout: main-vertical
+      panes:
+        - editor:
+          - nvim
+        -
+          - claude  # Top right panel
+          - # Bottom right panel for scripts

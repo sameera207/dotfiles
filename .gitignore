@@ -1,0 +1,43 @@
+# Secrets and credentials
+.env
+**/*.env
+**/private.zsh
+.config/gh/hosts.yml
+.config/op/
+.claude.json
+
+# Plugin managers and plugins (installed via scripts)
+.oh-my-zsh/
+!.oh-my-zsh/custom/
+.tmux/plugins/
+.config/nvim/plugged/
+.config/nvim/pack/
+.config/nvim/starter/
+.local/share/nvim/
+.asdf/
+.venvs/
+
+# macOS
+.DS_Store
+.Trash/
+
+# Vim temporary files
+*.swp
+*.swo
+*~
+.netrwhist
+
+# Backup files
+*.backup
+*.bak
+
+# IDE
+.idea/
+.vscode/
+
+# Node modules
+node_modules/
+
+# Python
+__pycache__/
+*.pyc

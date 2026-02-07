@@ -1,0 +1,15 @@
+# Private Configuration Template
+# Copy this file to private.zsh and fill in your actual values
+# private.zsh is gitignored and will never be committed to the repository
+
+# JIRA/Atlassian API Configuration
+export JIRA_URL="https://your-domain.atlassian.net"
+export JIRA_USERNAME="your-email@example.com"
+export JIRA_API_TOKEN="your-api-token-here"
+
+# GitHub Personal Access Token
+export GITHUB_PERSONAL_ACCESS_TOKEN="your-github-token-here"
+
+# Other API tokens and secrets
+# export QLTY_COVERAGE_TOKEN="your-token-here"
+# export OTHER_SECRET="your-secret-here"
