@@ -1,4 +1,4 @@
-# /Users/sameera.gayan/.config/tmuxinator/dev.yml
+# ~/.config/tmuxinator/dev.yml
 name: dev
 root: ~/workspace/personal
 

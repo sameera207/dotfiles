@@ -17,7 +17,7 @@ Personal dotfiles for macOS, managed with GNU Stow. Includes configurations for 
 ## Quick Start
 
 ```bash
-# Clone the repository
+# Clone the repository (replace YOUR_USERNAME with your GitHub username)
 git clone https://github.com/YOUR_USERNAME/dotfiles.git ~/dotfiles
 
 # Run the bootstrap script
@@ -26,15 +26,27 @@ cd ~/dotfiles
 ```
 
 The bootstrap script will:
-1. Install Homebrew (if not present)
-2. Install GNU Stow
-3. Install dependencies (neovim, tmux, ripgrep, fzf, jq)
-4. Install Oh My Zsh, asdf, and TPM
-5. Create symlinks for all configurations
-6. Create a `private.zsh` file for your secrets
-7. Install Neovim plugins (52 plugins via vim-plug)
-8. Install Tmux plugins
-9. Install asdf tools (Ruby, Node.js, kubectl)
+1. **Prompt for your personal information** (name, email, GitHub username, JIRA workspace)
+2. Generate your `.gitconfig` from template
+3. Install Homebrew (if not present)
+4. Install GNU Stow
+5. Install dependencies (neovim, tmux, ripgrep, fzf, jq)
+6. Install Oh My Zsh, asdf, and TPM
+7. Create symlinks for all configurations
+8. Create a `private.zsh` file with your information
+9. Install Neovim plugins (52 plugins via vim-plug)
+10. Install Tmux plugins
+11. Install asdf tools (Ruby, Node.js, kubectl)
+
+### First-Time Setup
+
+When you run `./bootstrap.sh`, you'll be prompted for:
+- **Full name** - Used for Git commits
+- **Email address** - Used for Git commits and JIRA
+- **GitHub username** - Your GitHub handle
+- **JIRA workspace** (optional) - Your company's Jira workspace name
+
+These values are used to generate your personal `.gitconfig` and pre-fill your `private.zsh` file.
 
 ## Prerequisites
 
@@ -76,7 +88,7 @@ dotfiles/
 │   ├── .bashrc
 │   └── .bash_profile
 ├── git/                     # Git configuration
-│   ├── .gitconfig
+│   ├── .gitconfig.example  # Template (generated on setup)
 │   └── .config/git/ignore
 ├── nvim/                    # Neovim configuration
 │   └── .config/nvim/
@@ -158,8 +170,8 @@ asdf current
 
 ### 5. Verify Git Configuration
 ```bash
-git config --global user.name    # Should output: Sameera (Sam)
-git config --global user.email   # Should output: sameera207@gmail.com
+git config --global user.name    # Should output your name
+git config --global user.email   # Should output your email
 ```
 
 ## Uninstalling
@@ -271,6 +283,23 @@ This is a personal dotfiles repository, but feel free to fork it and adapt it fo
 
 MIT
 
+## Portability
+
+These dotfiles are fully portable and contain **no hardcoded paths or personal information**:
+
+- All paths use `$HOME` or `~` expansion
+- Git configuration generated from template on first run
+- Personal information never committed to repository
+- Works across different machines and users
+
+### Template System
+
+Personal information is managed via templates:
+- `git/.gitconfig.example` → generates `git/.gitconfig` (gitignored)
+- `zsh/.config/zsh/private.zsh.example` → generates `private.zsh` (gitignored)
+
+The bootstrap script prompts for your information and fills in the templates automatically.
+
 ## Author
 
-Sameera (Sam) - sameera207@gmail.com
+Originally created by Sameera (Sam)

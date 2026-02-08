@@ -6,6 +6,12 @@
 .config/op/
 .claude.json
 
+# Generated configuration files (created from templates)
+git/.gitconfig
+
+# Temporary files from sed operations
+*.tmp
+
 # Plugin managers and plugins (installed via scripts)
 .oh-my-zsh/
 !.oh-my-zsh/custom/

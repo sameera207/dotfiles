@@ -1,13 +1,15 @@
 [user]
-	name = Sameera (Sam)
-	email = sameera207@gmail.com
+	name = {{GIT_NAME}}
+	email = {{GIT_EMAIL}}
 [filter "lfs"]
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
 	clean = git-lfs clean -- %f
 [credential]
-	helper = 
+	helper =
 	helper = /usr/local/share/gcm-core/git-credential-manager
 [credential "https://dev.azure.com"]
 	useHttpPath = true
+[init]
+	defaultBranch = main

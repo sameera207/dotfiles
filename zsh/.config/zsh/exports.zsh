@@ -5,7 +5,7 @@ export PATH="/usr/local/opt/python/libexec/bin:$PATH"
 export PATH="$PATH:$HOME/.gem/ruby/3.3.0/bin"
 
 # Local binaries
-export PATH="$PATH:/Users/sameera.gayan/.local/bin"
+export PATH="$PATH:$HOME/.local/bin"
 
 # PostgreSQL
 export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
@@ -25,4 +25,4 @@ export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
 # bun completions
-[ -s "/Users/sameera.gayan/.bun/_bun" ] && source "/Users/sameera.gayan/.bun/_bun"
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"

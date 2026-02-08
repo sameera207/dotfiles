@@ -15,6 +15,91 @@ echo -e "${BLUE}=== Dotfiles Installation ===${NC}\n"
 # Get the directory where this script is located
 DOTFILES_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+# Function to prompt for user input
+prompt_user_info() {
+    echo -e "${BLUE}=== Personal Configuration Setup ===${NC}\n"
+
+    # Git configuration
+    read -p "Enter your full name (for Git commits): " git_name
+    read -p "Enter your email address (for Git): " git_email
+    read -p "Enter your GitHub username: " github_username
+
+    # JIRA configuration (optional)
+    read -p "Enter your JIRA workspace name (e.g., 'mycompany' for mycompany.atlassian.net) [optional]: " jira_workspace
+
+    echo -e "\n${GREEN}Configuration received:${NC}"
+    echo -e "  Name: $git_name"
+    echo -e "  Email: $git_email"
+    echo -e "  GitHub: $github_username"
+    [ -n "$jira_workspace" ] && echo -e "  JIRA: $jira_workspace.atlassian.net"
+    echo ""
+    read -p "Is this correct? (y/n): " confirm
+
+    if [[ $confirm != [yY] ]]; then
+        echo -e "${YELLOW}Please run the script again with correct information${NC}"
+        exit 1
+    fi
+}
+
+# Function to generate config from template
+generate_gitconfig() {
+    local template="$DOTFILES_DIR/git/.gitconfig.example"
+    local output="$DOTFILES_DIR/git/.gitconfig"
+
+    if [ ! -f "$template" ]; then
+        echo -e "${RED}Error: $template not found${NC}"
+        return 1
+    fi
+
+    echo -e "${BLUE}Generating .gitconfig from template...${NC}"
+    cp "$template" "$output"
+
+    # macOS sed requires '' after -i
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        sed -i '' "s/{{GIT_NAME}}/$git_name/g" "$output"
+        sed -i '' "s/{{GIT_EMAIL}}/$git_email/g" "$output"
+    else
+        sed -i "s/{{GIT_NAME}}/$git_name/g" "$output"
+        sed -i "s/{{GIT_EMAIL}}/$git_email/g" "$output"
+    fi
+
+    echo -e "${GREEN}✓ .gitconfig generated${NC}"
+}
+
+# Function to generate private.zsh from template
+generate_private_zsh() {
+    local template="$HOME/.config/zsh/private.zsh.example"
+    local output="$HOME/.config/zsh/private.zsh"
+
+    if [ -f "$output" ]; then
+        echo -e "${YELLOW}private.zsh already exists, skipping...${NC}"
+        return 0
+    fi
+
+    echo -e "${BLUE}Creating private.zsh from template...${NC}"
+    cp "$template" "$output"
+
+    # Replace placeholders if JIRA workspace was provided
+    if [ -n "$jira_workspace" ]; then
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+            sed -i '' "s/{{JIRA_WORKSPACE}}/$jira_workspace/g" "$output"
+            sed -i '' "s/{{YOUR_EMAIL}}/$git_email/g" "$output"
+        else
+            sed -i "s/{{JIRA_WORKSPACE}}/$jira_workspace/g" "$output"
+            sed -i "s/{{YOUR_EMAIL}}/$git_email/g" "$output"
+        fi
+    fi
+
+    echo -e "${GREEN}✓ private.zsh created${NC}"
+    echo -e "${RED}⚠️  IMPORTANT: Edit ~/.config/zsh/private.zsh with your API tokens${NC}"
+}
+
+# Prompt for user information at the start
+prompt_user_info
+
+# Generate configs from templates
+generate_gitconfig
+
 # Check for Homebrew
 if ! command -v brew &> /dev/null; then
     echo -e "${BLUE}Installing Homebrew...${NC}"
@@ -82,12 +167,8 @@ stow -v -t "$HOME" asdf
 
 echo -e "${GREEN}✓ Dotfiles linked${NC}"
 
-# Create private config from template if it doesn't exist
-if [ ! -f "$HOME/.config/zsh/private.zsh" ]; then
-    echo -e "\n${BLUE}Creating private configuration file...${NC}"
-    cp "$HOME/.config/zsh/private.zsh.example" "$HOME/.config/zsh/private.zsh"
-    echo -e "${RED}⚠️  IMPORTANT: Edit ~/.config/zsh/private.zsh with your API tokens and secrets${NC}"
-fi
+# Generate private.zsh from template (if it doesn't exist)
+generate_private_zsh
 
 # Install vim-plug if not already installed
 if [ ! -f "${XDG_DATA_HOME:-$HOME/.local/share}/nvim/site/autoload/plug.vim" ]; then

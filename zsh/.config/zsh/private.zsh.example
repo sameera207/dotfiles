@@ -3,8 +3,8 @@
 # private.zsh is gitignored and will never be committed to the repository
 
 # JIRA/Atlassian API Configuration
-export JIRA_URL="https://your-domain.atlassian.net"
-export JIRA_USERNAME="your-email@example.com"
+export JIRA_URL="https://{{JIRA_WORKSPACE}}.atlassian.net"
+export JIRA_USERNAME="{{YOUR_EMAIL}}"
 export JIRA_API_TOKEN="your-api-token-here"
 
 # GitHub Personal Access Token

@@ -77,7 +77,7 @@ function switch-env() {
 }
 
 export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
-export GNUPGHOME=/Users/sameera.gayan/private/.gnupg
+export GNUPGHOME=$HOME/private/.gnupg
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init - bash)"
