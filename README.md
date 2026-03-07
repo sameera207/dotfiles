@@ -18,7 +18,7 @@ Personal dotfiles for macOS, managed with GNU Stow. Includes configurations for 
 
 ```bash
 # Clone the repository (replace YOUR_USERNAME with your GitHub username)
-git clone https://github.com/YOUR_USERNAME/dotfiles.git ~/dotfiles
+git clone https://github.com/sameera207/dotfiles.git ~/dotfiles
 
 # Run the bootstrap script
 cd ~/dotfiles
